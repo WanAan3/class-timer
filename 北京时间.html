@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>时钟</title>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: #ffffff;   /* 白色背景 */
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #000000;        /* 黑色字体 */
+    font-family: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    user-select: none;
+    overflow: hidden;
+  }
+  .time {
+    font-size: min(23vw, 34vh);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .date {
+    font-size: min(3.4vw, 4.6vh);
+    margin-top: 2vh;
+  }
+</style>
+</head>
+<body>
+  <div class="time" id="time">--:--:--</div>
+  <div class="date" id="date"></div>
+
+<script>
+  const timeEl = document.getElementById("time");
+  const dateEl = document.getElementById("date");
+  const fmt = new Intl.DateTimeFormat("zh-CN", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric", month: "numeric", day: "numeric", weekday: "short",
+    hour: "2-digit", minute: "2-digit", second: "2-digit",
+    hour12: false,
+  });
+
+  function render() {
+    const p = {};
+    for (const item of fmt.formatToParts(new Date())) p[item.type] = item.value;
+    const hh = p.hour === "24" ? "00" : p.hour;
+    timeEl.textContent = `${hh}:${p.minute}:${p.second}`;
+    const wd = (p.weekday || "").replace("周", "");
+    dateEl.textContent = `${p.year}年${p.month}月${p.day}日 星期${wd}`;
+  }
+
+  render();
+  setInterval(render, 200);
+</script>
+</body>
+</html>
